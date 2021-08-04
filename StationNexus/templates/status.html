@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{% endblock title %}
+{% block content %}
+<div class="card m-3">
+    <div class="card-header text-primary">Static Files</div>
+    <img src="{% static 'status/images/django-logo-negative.png' %}" class="card-img-top"
+        style="width: 250px; height: 100px;" alt="...">
+    <div class="card-body">
+        <p class="card-text">If the image displays correctly above, statis files are configured correctly</p>
+    </div>
+</div>
+<div class="card m-3">
+    <div class="card-header text-primary">Frameworks</div>
+    <div class="card-body">
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <th scope="col">Framework</th>
+                    <th scope="col">Version</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bootstrap (CDN)</td>
+                        <td><span id="bsv"></span></td>
+                    </tr>
+                    <tr>
+                        <td>jQuery (CDN)</td>
+                        <td><span id="jqv"></span></td>
+                    </tr>
+                    <tr>
+                        <td>DataTables (CDN)</td>
+                        <td><span id="dtv"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card m-3">
+    <div class="card-header text-primary">Services</div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <th scope="col">Service</th>
+                <th scope="col">Version</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Redis</td>
+                    <td>{{redis_version}}</td>
+                    <td>{{redis_status}}</span></td>
+                    <td>
+                        <a href="{% url 'status' 'redis_restart' %}" class="btn btn-outline-danger"
+                            aria-disabled="true">Restart</a>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>Background Tasks</td>
+                    <td>{{background_tasks_version}}</td>
+                    <td>{{background_tasks_status}}</span></td>
+                    <td>
+                        <a href="{% url 'status' 'background_tasks_restart' %}" class="btn btn-outline-danger"
+                            aria-disabled="true">Restart</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card m-3">
+    <div class="card-header text-primary">Database</div>
+    <div class="card-body">
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Table</th>
+                        <th scope="col">Row Count</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="row">Stations</td>
+                        <td>{{station_count}}</td>
+                        <td>
+                            {%if station_count > 0 %}
+                            <a href="#" class="btn btn-outline-secondary disabled" aria-disabled="true">Load</a>
+                            {% else %}
+                            <a href="{% url 'status' 'station_load' %}" class="btn btn-outline-primary" role="button"
+                                aria-disabled="false">Load</a>
+                            {% endif %}
+                            <a href="{% url 'status' 'station_reload' %}" class="btn btn-outline-danger" role="button"
+                                aria-disabled="false">Reload</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td scope="row">Active Stations</td>
+                        <td>{{active_station_count}}</td>
+                        <td>
+                            {%if active_station_count > 1 %}
+                            <a href="#" class="btn btn-outline-secondary disabled" role="button"
+                                aria-disabled="true">Load</a>
+                            {% else %}
+                            <a href="{% url 'status' 'active_station_load' %}" class="btn btn-outline-primary"
+                                role="button" aria-disabled="false">Load</a>
+                            {% endif %}
+                            <a href="{% url 'status' 'active_station_reload' %}" class="btn btn-outline-danger"
+                                role="button" aria-disabled="false">Reset</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card m-3">
+    <div class="card-header text-primary">Websocket/redis/channels</div>
+    <!-- <h3 id="socket">unknown</h3> -->
+    <div class="card-body">
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <p id="socket" class="text-success">Pending</p>
+            </blockquote>
+            <figcaption class="blockquote-footer">
+                Auto update ever 10 seconds is a positive test
+            </figcaption>
+        </figure>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script>
+    document.getElementById("bsv").innerHTML = bootstrap.Tooltip.VERSION;
+    document.getElementById("jqv").innerHTML = jQuery.fn.jquery;
+    document.getElementById("dtv").innerHTML = $.fn.dataTable.version;
+    console.log("creating socket")
+    const dataSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/10/'
+    );
+    console.log("socket created")
+    dataSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        document.getElementById("socket").innerHTML = data.message.test_time + " - " + data.message.test_msg;
+    };
+
+    dataSocket.onclose = function (e) {
+        console.error('Socket closed unexpectedly');
+    };
+</script>
+{% endblock scripts %}
