@@ -147,6 +147,7 @@
     console.log("socket created")
     dataSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
+        console.log(data.message.test_time + " - " + data.message.test_msg)
         document.getElementById("socket").innerHTML = data.message.test_time + " - " + data.message.test_msg;
     };
 
