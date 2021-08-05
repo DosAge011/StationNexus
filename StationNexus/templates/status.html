@@ -161,6 +161,7 @@
 
     dataSocket.onclose = function (e) {
         console.error('Socket closed unexpectedly');
+        location.reload();
     };
 </script>
 {% endblock scripts %}
