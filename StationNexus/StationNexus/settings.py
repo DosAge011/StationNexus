@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "channels",
     "background_task",
     "database",
+    "kiosk",
 ]
 
 MIDDLEWARE = [

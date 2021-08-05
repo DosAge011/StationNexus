@@ -4,10 +4,18 @@
 {% block content %}
 <div class="card m-3">
     <div class="card-header text-primary">Static Files</div>
-    <img src="{% static 'status/images/django-logo-negative.png' %}" class="card-img-top"
-        style="width: 250px; height: 100px;" alt="...">
+    <img src="{% static 'status/images/static_test.png' %}" class="card-img-top" style="width: 250px; height: 100px;"
+        alt="...">
     <div class="card-body">
         <p class="card-text">If the image displays correctly above, statis files are configured correctly</p>
+    </div>
+</div>
+<div class="card m-3">
+    <div class="card-header text-primary">Media Files</div>
+    <img src="{% static 'status/images/static_test.png' %}" class="card-img-top" style="width: 250px; height: 100px;"
+        alt="...">
+    <div class="card-body">
+        <p class="card-text">If the image above displays correctly , media files are configured correctly</p>
     </div>
 </div>
 <div class="card m-3">
@@ -56,7 +64,6 @@
                         <a href="{% url 'status' 'redis_restart' %}" class="btn btn-outline-danger"
                             aria-disabled="true">Restart</a>
                     </td>
-
                 </tr>
                 <tr>
                     <td>Background Tasks</td>
@@ -120,7 +127,6 @@
 </div>
 <div class="card m-3">
     <div class="card-header text-primary">Websocket/redis/channels</div>
-    <!-- <h3 id="socket">unknown</h3> -->
     <div class="card-body">
         <figure class="text-center">
             <blockquote class="blockquote">
@@ -142,7 +148,7 @@
     const dataSocket = new WebSocket(
         'ws://'
         + window.location.host
-        + '/ws/10/'
+        + '/ws/test/10/'
     );
     console.log("socket created")
     dataSocket.onmessage = function (e) {
