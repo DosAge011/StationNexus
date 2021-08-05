@@ -8,6 +8,7 @@ from redis import Redis
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from background_task import __version__ as bgt_version
+from daphne import __version__ as daphne_version
 
 
 class Status_View(LoginRequiredMixin, View):
@@ -35,6 +36,8 @@ class Status_View(LoginRequiredMixin, View):
             "redis_version": self.redis_version(),
             "background_tasks_status": self.background_tasks_status(),
             "background_tasks_version": self.background_tasks_version(),
+            "daphne_status": self.daphne_status(),
+            "daphne_version": self.daphne_version(),
             "station_count": station_count,
             "active_station_count": active_station_count,
         }
@@ -63,8 +66,19 @@ class Status_View(LoginRequiredMixin, View):
         pstat = "Stopped"
         for proc in psutil.process_iter(["pid", "name", "cmdline", "status"]):
             if "process_tasks" in proc.info["cmdline"]:
+                # pstat = proc.info["status"]
+                pstat = "Running"
+        return pstat
+
+    def daphne_status(self):
+        pstat = "Stopped"
+        for proc in psutil.process_iter(["pid", "name", "cmdline", "status"]):
+            if "daphne" in proc.info["cmdline"]:
                 pstat = proc.info["status"]
         return pstat
+
+    def daphne_version(self):
+        return daphne_version
 
     def background_tasks_version(self):
         return bgt_version

@@ -7,7 +7,7 @@
     <img src="{% static 'status/images/django-logo-negative.png' %}" class="card-img-top"
         style="width: 250px; height: 100px;" alt="...">
     <div class="card-body">
-        <p class="card-text">If the image displays correctly above, statis files are configured correctly</p>
+        <p class="card-text">If the image displays correctly above, static files are configured correctly</p>
     </div>
 </div>
 <div class="card m-3">
@@ -67,6 +67,16 @@
                             aria-disabled="true">Restart</a>
                     </td>
                 </tr>
+                <tr>
+                    <td>Daphne</td>
+                    <td>{{daphne_version}}</td>
+                    <td>{{daphne_status}}</span></td>
+                    <td>
+                        <a href="{% url 'status' 'redis_restart' %}" class="btn btn-outline-danger disabled"
+                            aria-disabled="true">Restart</a>
+                    </td>
+
+                </tr>
             </tbody>
         </table>
     </div>
@@ -120,7 +130,6 @@
 </div>
 <div class="card m-3">
     <div class="card-header text-primary">Websocket/redis/channels</div>
-    <!-- <h3 id="socket">unknown</h3> -->
     <div class="card-body">
         <figure class="text-center">
             <blockquote class="blockquote">
