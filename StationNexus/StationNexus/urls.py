@@ -30,7 +30,7 @@ urlpatterns = [
     path("login/", Login_View.as_view(), name="login"),
     path("logout/", Logout_View.as_view(), name="logout"),
     path("kiosk/", Kiosk_View.as_view(), name="kiosk"),
-    path("kiosk/<view_station>/", Kiosk_View.as_view(), name="station"),
+    path("kiosk/<view_station>/", Kiosk_View.as_view(), name="kiosk"),
 ]
 
 if settings.DEBUG:

@@ -65,9 +65,13 @@ class Kiosk_View(LoginRequiredMixin, View):
             else:
 
                 print(f"view_station={view_station} is NOT active")
+
                 return HttpResponse(
                     "Station not active in this system. Contact the adminitrator"
                 )
 
         else:
-            return HttpResponse("Station number not provided")
+            context = {"station_select": Station.objects.filter(is_active=True)}
+            return render(request, "kiosk_select.html", context)
+
+            # return HttpResponse("Station number not provided")
