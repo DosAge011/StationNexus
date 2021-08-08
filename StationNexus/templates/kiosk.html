@@ -87,9 +87,7 @@
     updateOosTable({{ oos_units | safe }})
     updatePersonnelTable({{ personnel | safe }})
 
-
-    var t = moment().format('HH:MM:ss');
-    $("#updateTime").text("Last Update: " + t);
+    $("#updateTime").text("Last Update: " + moment().format('HH:mm:ss'));
 
     });
 
@@ -103,8 +101,10 @@
     dataSocket.onmessage = function (e) {
 
         console.log("msg recieved")
-        const data = JSON.parse(e.data);
 
+        $("#updateTime").text("Last Update: " + moment().format('HH:mm:ss'));
+
+        const data = JSON.parse(e.data);
         updateActiveTable(JSON.parse(data.message.active_units))
         updateOosTable(JSON.parse(data.message.oos_units))
         updatePersonnelTable(JSON.parse(data.message.personnel))
