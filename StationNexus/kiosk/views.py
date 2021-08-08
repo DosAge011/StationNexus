@@ -73,5 +73,3 @@ class Kiosk_View(LoginRequiredMixin, View):
         else:
             context = {"station_select": Station.objects.filter(is_active=True)}
             return render(request, "kiosk_select.html", context)
-
-            # return HttpResponse("Station number not provided")

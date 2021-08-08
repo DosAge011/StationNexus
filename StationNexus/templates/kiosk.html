@@ -6,7 +6,14 @@
 {% endblock css %}
 {% block content %}
 <div class="alert alert-primary" role="alert">
-    Station {{view_station}} ({{view_station_name}})
+    <div class="row">
+        <div class="col">
+            Station {{view_station}} ({{view_station_name}})
+        </div>
+        <div id="updateTime" class="col text-end">
+            Last updated:
+        </div>
+    </div>
 </div>
 <div class="container-fluid">
     <div class="row">
@@ -71,18 +78,21 @@
 {% endblock content %}
 {% block scripts %}
 <script src='{% static "kiosk/js/kiosk.js" %}'></script>
+<script src='{% static "kiosk/js/moment-with-locales.js" %}'></script>
 <script>
 
-    // var activeTable = $("#active_units")
-    // var activeUnitData = {{ active_units | safe}}
+    $(document).ready(function () {
+        console.log({{ active_units | safe}});
+    updateActiveTable({{ active_units | safe}})
+    updateOosTable({{ oos_units | safe }})
+    updatePersonnelTable({{ personnel | safe }})
 
-    // var oosTable = $("#oos_units")
-    // var oos_data = {{ oos_units | safe }}
 
-    // var personnelTable = $("#personnel")
-    // var personnel_data = {{ personnel | safe }}
+    var t = moment().format('HH:MM:ss');
+    $("#updateTime").text("Last Update: " + t);
 
-    // loadActiveTable(activeUnitData)
+    });
+
 
     const dataSocket = new WebSocket(
         'ws://'
@@ -91,20 +101,22 @@
         );
 
     dataSocket.onmessage = function (e) {
+
         console.log("msg recieved")
         const data = JSON.parse(e.data);
 
-        loadActiveTable(data.message.active_units);
-        loadOosTable(data.message.oos_units);
-        loadPersonnelTable(data.message.personnel);
-        $("#active_units").dataTable().fnDraw();
+        updateActiveTable(JSON.parse(data.message.active_units))
+        updateOosTable(JSON.parse(data.message.oos_units))
+        updatePersonnelTable(JSON.parse(data.message.personnel))
+
+        var t = moment().format('HH:MM:ss');
+        $("#updateTime").text("Last Update: " + t);
 
     };
 
     dataSocket.onclose = function (e) {
         console.error('Socket closed unexpectedly');
     };
-
 </script>
 
 {% endblock scripts %}

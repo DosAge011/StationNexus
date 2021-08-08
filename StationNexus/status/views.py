@@ -63,7 +63,8 @@ class Status_View(LoginRequiredMixin, View):
         pstat = "Stopped"
         for proc in psutil.process_iter(["pid", "name", "cmdline", "status"]):
             if "process_tasks" in proc.info["cmdline"]:
-                pstat = proc.info["status"]
+                # pstat = proc.info["status"]
+                pstat = "Running"
         return pstat
 
     def background_tasks_version(self):
