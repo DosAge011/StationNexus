@@ -54,13 +54,22 @@ function updateActiveTable(data) {
 
 
 var oosTable = $("#oos_units").DataTable({
+    responsive: true,
+    responsive: {
+        breakpoints: [
+            { name: 'desktop', width: Infinity },
+            { name: 'tablet', width: 1024 },
+            { name: 'fablet', width: 768 },
+            { name: 'phone', width: 480 }
+        ]
+    },
     "paging": false,
     "searching": false,
     "info": false,
     "columns": [
-        { title: "Unit", "data": "fields.call_sign" },
-        { title: "Status", "data": "fields.status" },
-        { title: "Status", "data": "fields.out_of_service_code" },
+        { title: "Unit", "data": "fields.call_sign", responsivePriority: 1 },
+        { title: "Status", "data": "fields.status", responsivePriority: 2 },
+        { title: "Status", "data": "fields.out_of_service_code", responsivePriority: 10001 },
         {
             title: "Duration", "data": "fields.last_status_change", render: function (data, type, row, meta) {
                 var startTime = new Date(data);
@@ -68,7 +77,7 @@ var oosTable = $("#oos_units").DataTable({
                 var diff = endTime - startTime
                 diff /= 1000
                 return Math.round(diff / 60)
-            }
+            }, responsivePriority: 2
         },
     ]
 })
