@@ -60,6 +60,7 @@ class Kiosk_View(LoginRequiredMixin, View):
                     "messages": Broadcast_Message.objects.filter(
                         station_id__in=[view_station, 1]
                     ),
+                    "station_select": Station.objects.filter(is_active=True),
                 }
                 return render(request, "kiosk.html", context)
             else:
