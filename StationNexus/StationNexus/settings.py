@@ -136,7 +136,7 @@ if DEBUG:
 
 
 else:
-    ALLOWED_HOSTS = ["172.105.26.24", "127.0.0.1"]
+    ALLOWED_HOSTS = ["172.105.26.24", "127.0.0.1", "dogfucker.site"]
     STATIC_URL = "/static/"
     STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
