@@ -3,7 +3,7 @@ import json
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DEBUG = True
+DEBUG = False
 
 with open("/etc/station_nexus.json") as f:
     SECRET_KEY = json.load(f)["SECRET_KEY"]

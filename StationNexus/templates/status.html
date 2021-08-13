@@ -146,7 +146,7 @@
     console.log("creating socket")
     const dataSocket = new WebSocket(
         'ws://'
-        + window.location.host
+        + window.location.host + ":8001"
         + '/ws/test/10/'
     );
     console.log("socket created")
