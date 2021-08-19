@@ -7,7 +7,7 @@
     <img src="{% static 'status/images/static_test.png' %}" class="card-img-top" style="width: 250px; height: 100px;"
         alt="...">
     <div class="card-body">
-        <p class="card-text">If the image displays correctly above, statis files are configured correctly</p>
+        <p class="card-text">If the image displays correctly above, static files are configured correctly</p>
     </div>
 </div>
 <div class="card m-3">
@@ -72,6 +72,16 @@
                         <a href="{% url 'status' 'background_tasks_restart' %}" class="btn btn-outline-danger"
                             aria-disabled="true">Restart</a>
                     </td>
+                </tr>
+                <tr>
+                    <td>Daphne</td>
+                    <td>{{daphne_version}}</td>
+                    <td>{{daphne_status}}</span></td>
+                    <td>
+                        <a href="{% url 'status' 'redis_restart' %}" class="btn btn-outline-danger disabled"
+                            aria-disabled="true">Restart</a>
+                    </td>
+
                 </tr>
             </tbody>
         </table>
@@ -143,7 +153,6 @@
     document.getElementById("bsv").innerHTML = bootstrap.Tooltip.VERSION;
     document.getElementById("jqv").innerHTML = jQuery.fn.jquery;
     document.getElementById("dtv").innerHTML = $.fn.dataTable.version;
-    console.log("creating socket")
     const dataSocket = new WebSocket(
         'ws://'
         + window.location.host + ":8001"
@@ -158,6 +167,7 @@
 
     dataSocket.onclose = function (e) {
         console.error('Socket closed unexpectedly');
+        location.reload();
     };
 </script>
 {% endblock scripts %}
