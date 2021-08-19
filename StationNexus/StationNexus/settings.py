@@ -3,7 +3,7 @@ import json
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DEBUG = True
+DEBUG = False
 
 with open("/etc/station_nexus.json") as f:
     SECRET_KEY = json.load(f)["SECRET_KEY"]
@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "channels",
     "background_task",
     "database",
+    "kiosk",
 ]
 
 MIDDLEWARE = [
@@ -126,18 +127,11 @@ LOGIN_URL = "/login/"
 MAX_RUN_TIME = 30
 BACKGROUND_TASK_RUN_ASYNC = True
 
-if DEBUG:
-    ALLOWED_HOSTS = []
-    STATIC_URL = "/static/"
-    STATICFILES_DIRS = [
-        BASE_DIR / "static",
-    ]
 
+ALLOWED_HOSTS = ["172.105.26.24", "127.0.0.1", "dogfucker.site", "offlimits.wtf"]
 
-else:
-    ALLOWED_HOSTS = ["172.105.26.24", "www.clunky.biz" "127.0.0.1"]
-    STATIC_URL = "/static/"
-    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
     # CHANNEL_LAYERS = {
     #     "default": {

@@ -75,7 +75,7 @@ class Status_View(LoginRequiredMixin, View):
         for proc in psutil.process_iter(["pid", "name", "cmdline", "status"]):
             if "daphne" in proc.info["cmdline"]:
                 pstat = proc.info["status"]
-        return pstat
+
 
     def daphne_version(self):
         return daphne_version

@@ -16,9 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from status.views import Status_View
+from kiosk.views import Kiosk_View
 from authentication.views import Login_View, Logout_View
 from status.tasks import bg_tasks_status
-
+from kiosk.tasks import bg_tasks_station_update, update_tables
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -26,7 +29,16 @@ urlpatterns = [
     path("status/<action>", Status_View.as_view(), name="status"),
     path("login/", Login_View.as_view(), name="login"),
     path("logout/", Logout_View.as_view(), name="logout"),
+    path("kiosk/", Kiosk_View.as_view(), name="kiosk"),
+    path("kiosk/<view_station>/", Kiosk_View.as_view(), name="kiosk"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 bg_tasks_status(repeat=10, repeat_until=None)
+
+bg_tasks_station_update(repeat=10, repeat_until=None)
+update_tables()
+update_tables(repeat=10, repeat_until=None)

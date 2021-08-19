@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load math_tags %}
+{% block title %}<title>Station Nexus - Select</title>{% endblock title %}
+{% block css %}
+{% endblock css %}
+{% block content %}
+<div class="alert alert-primary" role="alert">
+    Station Select:
+</div>
+
+<div class="card m-3 col-md-3">
+    <div class="card-header text-primary">Active Stations</div>
+    <div class="card-body">
+        <ul class="list-group"></ul>
+        {% for station in station_select %}
+        <li class="list-group-item">
+            <a href="{% url 'kiosk' station.number %}" class="btn btn-outline-primary" role="button"
+                aria-disabled="false">{{station.number}} - {{station.name}}</a>
+        </li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
+{% endblock content %}

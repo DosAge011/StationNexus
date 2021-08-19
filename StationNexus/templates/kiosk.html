@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load math_tags %}
+{% block title %}<title>Station Nexus - {{view_station}}</title>{% endblock title %}
+{% block css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+{% endblock css %}
+{% block content %}
+<div class="alert alert-primary" role="alert">
+    <div class="row">
+        <div class="col">
+            Station {{view_station}} ({{view_station_name}})
+        </div>
+        <div class="col text-center d-block d-md-none">
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                ...
+            </button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Select Station:</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group"></ul>
+                            {% for station in station_select %}
+                            <li class="list-group-item">
+                                <a href="{% url 'kiosk' station.number %}" class="btn btn-outline-primary" role="button"
+                                    aria-disabled="false">{{station.number}} - {{station.name}}</a>
+                            </li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="updateTime" class="col text-end">
+            Last updated:
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12 col-xxl-6">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12 mb-3">
+                        <h5 class="card-title text-white mb-0" style="background-color: rgb(68, 68, 175);">Active Units
+                        </h5>
+                        <div class="container-fluid p-0 shadow">
+                            <table id="active_units" class="table table-striped compact alert-primary"
+                                style="width:100%">
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                        <h5 class="card-title text-white mb-0" style="background-color: rgb(68, 68, 175);">Out Of
+                            Service Units</h5>
+                        <div class="container-fluid p-0 shadow">
+                            <table id="oos_units" class="table table-striped compact alert-primary" style="width:100%">
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <h5 class="card-title text-white mb-0" style="background-color: rgb(68, 68, 175);">Personnel
+                        </h5>
+                        <div class="container-fluid p-0 shadow">
+                            <table id="personnel" class="table table-striped compact alert-primary" style="width:100%">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-6 d-none d-xxl-block">
+            <div id="broadcastMessage" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for msg in messages %}
+                    {% if forloop.first %}
+                    <div class="carousel-item active" data-bs-interval={{ msg.display_time|mult:1000 }}>
+                        {%else%}
+                        <div class="carousel-item" data-bs-interval={{ msg.display_time|mult:1000 }}>
+                            {% endif %}
+                            <img src={{msg.image_sized.url}} class="d-block w-100 border border-primary border-3"
+                                alt="...">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src='{% static "kiosk/js/kiosk.js" %}'></script>
+<script src='{% static "kiosk/js/moment-with-locales.js" %}'></script>
+<script>
+    $(document).ready(function () {
+        console.log({{ active_units | safe}});
+    updateActiveTable({{ active_units | safe}})
+    updateOosTable({{ oos_units | safe }})
+    updatePersonnelTable({{ personnel | safe }})
+    $("#updateTime").text("Last Update: " + moment().format('HH:mm:ss'));
+    });
+
+    const dataSocket = new WebSocket(
+        'ws://'
+        + window.location.host + ":8001"
+        + '/ws/kiosk/' + {{ view_station }}+'/'
+        );
+
+    dataSocket.onmessage = function (e) {
+        console.log("msg recieved")
+        $("#updateTime").text("Last Update: " + moment().format('HH:mm:ss'));
+        const data = JSON.parse(e.data);
+        updateActiveTable(JSON.parse(data.message.active_units))
+        updateOosTable(JSON.parse(data.message.oos_units))
+        updatePersonnelTable(JSON.parse(data.message.personnel))
+    };
+
+    dataSocket.onclose = function (e) {
+        console.error('Socket closed unexpectedly');
+    };
+</script>
+{% endblock scripts %}

@@ -23,7 +23,7 @@ def bg_tasks_status(*kwargs):
     async_to_sync(channel_layer.group_send)(
         f"data_{stn_id}",
         {
-            "type": "send_data",
+            "type": "send_test_data",
         },
     )
     print(strftime("%Y-%m-%d %H:%M:%S", gmtime()), "background task complete")
